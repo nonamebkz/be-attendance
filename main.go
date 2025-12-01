@@ -1,29 +1,27 @@
 package main
 
 import (
+	"absensi-versevox/config"
+	"absensi-versevox/routes"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func main() {
+	// inisialisasi konfigurasi dan koneksi database
+	config.LoadEnv()
+	config.ConnectDB()
+
 	// 1. Inisialisasi Fiber
 	app := fiber.New()
 
 	// 2. Definisikan Route (Endpoint)
 	// Ketika user mengakses path "/" dengan metode GET
-	app.Get("/", func(c *fiber.Ctx) error {
-		// Mengembalikan response JSON
-		return c.JSON(fiber.Map{
-			"message": "Hello World! Ini adalah API Absensi Anda.",
-			"status":  "success",
-		})
+	routes.Setup(app)
 
-		// Atau hanya mengembalikan teks:
-		// return c.SendString("Hello, World 👋!")
-	})
-
-	// 3. Menjalankan Server
-	// Server akan berjalan di port 3000
-	log.Fatal(app.Listen(":3000"))
+	// server berjalan pada port yang ditentukan di konfigurasi
+	port := config.AppConfig.AppPort
+	log.Println("server is running on port: ", port)
+	log.Fatal(app.Listen(":" + port))
 }
