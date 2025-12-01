@@ -17,10 +17,9 @@ func main() {
 	app := fiber.New()
 
 	// 2. Definisikan Route (Endpoint)
-	// Ketika user mengakses path "/" dengan metode GET
 	routes.Setup(app)
 
-	// server berjalan pada port yang ditentukan di konfigurasi
+	// 3. server berjalan pada port yang ditentukan di konfigurasi
 	port := config.AppConfig.AppPort
 	log.Println("server is running on port: ", port)
 	log.Fatal(app.Listen(":" + port))

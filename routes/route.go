@@ -8,6 +8,7 @@ import (
 )
 
 func Setup(app *fiber.App) {
+	// Load environment variables
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
