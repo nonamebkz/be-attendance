@@ -3,10 +3,10 @@ package models
 import "time"
 
 type Reset struct {
-	ID   int32      `gorm:"primaryKey;column:id_reset;type:serial4" json:"id_reset"`
-	UserID    int32      `gorm:"column:user_id;not null" json:"user_id"`
-	Token     string     `gorm:"column:token;size:255;not null" json:"token"`
-	ExpiredAt time.Time  `gorm:"column:expired_at;type:timestamptz;not null" json:"expired_at"`
-	UsedAt    *time.Time `gorm:"column:used_at;type:timestamptz" json:"used_at"`
-	CreatedAt time.Time  `gorm:"column:created_at;type:timestamptz;not null" json:"created_at"`
+	ID        int32      `db:"id_reset" json:"id_reset"`
+	UserID    int32      `db:"user_id" json:"user_id"`
+	Token     string     `db:"token" json:"token"`
+	ExpiredAt time.Time  `db:"expired_at" json:"expired_at"`
+	UsedAt    *time.Time `db:"used_at" json:"used_at"`
+	CreatedAt time.Time  `db:"created_at" json:"created_at"`
 }
