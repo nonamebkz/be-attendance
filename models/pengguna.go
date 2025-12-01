@@ -2,8 +2,8 @@ package models
 
 import "time"
 
-type AppUser struct {
-	IDUser       int32     `gorm:"primaryKey;column:id_user;type:serial4" json:"id_user"`
+type User struct {
+	ID       int32     `gorm:"primaryKey;column:id_user;type:serial4" json:"id_user"`
 	Username     string    `gorm:"column:username;size:50;not null;unique" json:"username"`
 	Email        string    `gorm:"column:email;size:100;not null;unique" json:"email"`
 	PasswordHash string    `gorm:"column:password_hash;size:255;not null" json:"-"` // json:"-" menyembunyikan hash saat API response

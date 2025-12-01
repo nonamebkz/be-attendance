@@ -3,7 +3,7 @@ package models
 import "time"
 
 type Karyawan struct {
-	IDKaryawan   int32      `gorm:"primaryKey;column:id_karyawan;type:serial4" json:"id_karyawan"`
+	ID           int32      `gorm:"primaryKey;column:id_karyawan;type:serial4" json:"id_karyawan"`
 	UserID       *int32     `gorm:"column:user_id" json:"user_id"`
 	NIP          *string    `gorm:"column:nip;size:50;unique" json:"nip"`
 	Nama         string     `gorm:"column:nama;size:100;not null" json:"nama"`

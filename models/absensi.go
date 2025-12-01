@@ -3,7 +3,7 @@ package models
 import "time"
 
 type Absensi struct {
-	IDAbsensi   int32      `gorm:"primaryKey;column:id_absensi;type:serial4" json:"id_absensi"`
+	ID          int32      `gorm:"primaryKey;column:id_absensi;type:serial4" json:"id_absensi"`
 	KaryawanID  int32      `gorm:"column:karyawan_id;not null" json:"karyawan_id"`
 	Tanggal     time.Time  `gorm:"column:tanggal;type:date;not null" json:"tanggal"`
 	WaktuMasuk  *time.Time `gorm:"column:waktu_masuk;type:timestamptz" json:"waktu_masuk"`
