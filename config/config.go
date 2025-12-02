@@ -6,13 +6,12 @@ import (
 	"os"
 	"time"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/joho/godotenv"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+	_ "github.com/lib/pq" // PostgreSQL driver
 )
 
 var (
-	DB        *gorm.DB
 	AppConfig *Config
 )
 
@@ -49,25 +48,21 @@ func getEnv(key string, fallback string) string {
 	return fallback
 }
 
-func ConnectDB() {
+func ConnectDB() (*sqlx.DB, error) {
 	cfg := AppConfig
 
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", cfg.DBHost, cfg.DBPort, cfg.DBUser, cfg.DBPassword, cfg.DBName)
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := sqlx.Connect("postgres", dsn)
 	if err != nil {
 		log.Fatal("Failed to connect to database:", err)
+		return nil, err
 	}
-	fmt.Println("✅ Koneksi ke PostgreSQL GORM berhasil!")
+	fmt.Println("✅ Koneksi ke PostgreSQL sqlx berhasil!")
 
-	sqlDB, err := db.DB()
-	if err != nil {
-		log.Fatal("Failed to get database instance:", err)
-	}
+	db.SetMaxIdleConns(10)
+	db.SetMaxOpenConns(100)
+	db.SetConnMaxLifetime(time.Hour)
 
-	sqlDB.SetMaxIdleConns(10)
-	sqlDB.SetMaxOpenConns(100)
-	sqlDB.SetConnMaxLifetime(time.Hour)
-
-	DB = db
+	return db, nil
 }

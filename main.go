@@ -2,6 +2,7 @@ package main
 
 import (
 	"absensi-versevox/config"
+	"absensi-versevox/database/uow"
 	"absensi-versevox/routes"
 	"log"
 
@@ -11,7 +12,14 @@ import (
 func main() {
 	// inisialisasi konfigurasi dan koneksi database
 	config.LoadEnv()
-	config.ConnectDB()
+	db, err := config.ConnectDB()
+	if err != nil {
+		log.Fatalf("Could not connect to database: %v", err)
+	}
+	defer db.Close()
+
+	// Inisialisasi UnitOfWork
+	_ = uow.NewUnitOfWork(db)
 
 	// 1. Inisialisasi Fiber
 	app := fiber.New()
