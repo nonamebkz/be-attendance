@@ -1,13 +1,15 @@
 package routes
 
 import (
+	"absensi-versevox/database/uow"
+	"absensi-versevox/handlers"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
 )
 
-func Setup(app *fiber.App) {
+func Setup(app *fiber.App, uowInstance uow.UnitOfWork) {
 	// Load environment variables
 	err := godotenv.Load()
 	if err != nil {
@@ -17,5 +19,10 @@ func Setup(app *fiber.App) {
 	// Definisikan route di sini
 	app.Get("/v1/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World!")
+	})
+
+	// Karyawan endpoints
+	app.Get("/karyawan-get", func(c *fiber.Ctx) error {
+		return handlers.GetKaryawanByID(c, uowInstance)
 	})
 }

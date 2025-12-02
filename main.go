@@ -19,13 +19,13 @@ func main() {
 	defer db.Close()
 
 	// Inisialisasi UnitOfWork
-	_ = uow.NewUnitOfWork(db)
+	uowInstance := uow.NewUnitOfWork(db)
 
 	// 1. Inisialisasi Fiber
 	app := fiber.New()
 
 	// 2. Definisikan Route (Endpoint)
-	routes.Setup(app)
+	routes.Setup(app, uowInstance)
 
 	// 3. server berjalan pada port yang ditentukan di konfigurasi
 	port := config.AppConfig.AppPort
