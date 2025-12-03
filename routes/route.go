@@ -28,6 +28,12 @@ func Setup(app *fiber.App, uowInstance uow.UnitOfWork) {
 	app.Post("/karyawan-create", func(c *fiber.Ctx) error {
 		return handlers.CreateKaryawanByID(c, uowInstance)
 	})
+	app.Put("/karyawan-update", func(c *fiber.Ctx) error {
+		return handlers.UpdateKaryawanByID(c, uowInstance)
+	})
+	app.Delete("/karyawan-delete", func(c *fiber.Ctx) error {
+		return handlers.DeleteKaryawanByID(c, uowInstance)
+	})
 
 	//Pengguna endpoints
 	app.Get("/pengguna-get", func(c *fiber.Ctx) error {

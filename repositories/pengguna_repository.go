@@ -2,19 +2,19 @@ package repositories
 
 import (
 	"absensi-versevox/models"
-	// "database/sql"
+	"database/sql"
 	"log"
 
 	"github.com/jmoiron/sqlx"
 )
 
-// // DBTx interface untuk fleksibilitas menggunakan *sqlx.DB atau *sqlx.Tx
-// type DbTx interface {
-// 	Get(dest interface{}, query string, args ...interface{}) error
-// 	Select(dest interface{}, query string, args ...interface{}) error
-// 	Exec(query string, args ...interface{}) (sql.Result, error)
-// 	QueryRow(query string, args ...interface{}) *sql.Row
-// }
+// DBTx interface untuk fleksibilitas menggunakan *sqlx.DB atau *sqlx.Tx
+type DbTx interface {
+	Get(dest interface{}, query string, args ...interface{}) error
+	Select(dest interface{}, query string, args ...interface{}) error
+	Exec(query string, args ...interface{}) (sql.Result, error)
+	QueryRow(query string, args ...interface{}) *sql.Row
+}
 
 type PenggunaRepository interface {
 	CreatePengguna(pengguna *models.InsertUser) error
