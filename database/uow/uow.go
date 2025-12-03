@@ -24,6 +24,7 @@ type UnitOfWork interface {
 	// Repository getters - semua repository menggunakan transaksi yang sama
 	KaryawanRepository() repositories.KaryawanRepository
 	// Tambahkan repository lainnya di sini saat diperlukan
+	PenggunaRepository() repositories.PenggunaRepository
 }
 
 type unitOfWork struct {
@@ -31,6 +32,7 @@ type unitOfWork struct {
 	tx           *sqlx.Tx
 	inTx         bool
 	karyawanRepo repositories.KaryawanRepository
+	penggunaRepo repositories.PenggunaRepository
 }
 
 // NewUnitOfWork creates a new UnitOfWork instance
@@ -152,4 +154,19 @@ func (uow *unitOfWork) KaryawanRepository() repositories.KaryawanRepository {
 		}
 	}
 	return uow.karyawanRepo
+}
+
+// KaryawanRepository returns the karyawan repository with transaction
+func (uow *unitOfWork) PenggunaRepository() repositories.PenggunaRepository {
+	// Lazy loading untuk repository
+	if uow.penggunaRepo == nil {
+		if uow.inTx {
+			uow.penggunaRepo = repositories.NewPenggunaRepositoryWithTx(uow.tx)
+		} else {
+			// Jika tidak dalam transaksi, return repository baru dengan DB biasa
+			// Note: Kita tidak menyimpannya di struct karena ini stateless/short-lived
+			return repositories.NewPenggunaRepository(uow.db)
+		}
+	}
+	return uow.penggunaRepo
 }

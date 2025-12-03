@@ -28,4 +28,9 @@ func Setup(app *fiber.App, uowInstance uow.UnitOfWork) {
 	app.Post("/karyawan-create", func(c *fiber.Ctx) error {
 		return handlers.CreateKaryawanByID(c, uowInstance)
 	})
+
+	//Pengguna endpoints
+	app.Post("/pengguna-create", func(c *fiber.Ctx) error {
+		return handlers.CreatePenggunaByID(c, uowInstance)
+	})
 }

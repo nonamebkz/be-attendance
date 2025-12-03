@@ -13,3 +13,14 @@ type User struct {
 	CreatedAt    time.Time `db:"created_at" json:"created_at"`
 	UpdatedAt    time.Time `db:"updated_at" json:"updated_at"`
 }
+
+type InsertUser struct {
+	Username     string  `db:"username" json:"username"`
+	Email        string  `db:"email" json:"email"`
+	PasswordHash string  `db:"password_hash" json:"-"`
+	NamaLengkap  *string `db:"nama_lengkap" json:"nama_lengkap"`
+	Role         string  `db:"role" json:"role"`
+	StatusAkun   string  `db:"status_akun" json:"status_akun"`
+	CreatedAt	string  `db:"created_at" json:"created_at"`
+	UpdatedAt	string  `db:"updated_at" json:"updated_at"`
+}
