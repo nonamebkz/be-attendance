@@ -35,6 +35,11 @@ func Setup(app *fiber.App, uowInstance uow.UnitOfWork) {
 		return handlers.DeleteKaryawanByID(c, uowInstance)
 	})
 
+	//ini contoh ya
+	app.Post("/karyawan-create-tx", func(c *fiber.Ctx) error {
+		return handlers.CreateKaryawanWithTX(c, uowInstance)
+	})
+
 	//Pengguna endpoints
 	app.Get("/pengguna-get", func(c *fiber.Ctx) error {
 		return handlers.GetPenggunaByID(c, uowInstance)

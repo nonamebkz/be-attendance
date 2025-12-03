@@ -44,6 +44,68 @@ func GetKaryawanByID(c *fiber.Ctx, uowInstance uow.UnitOfWork) error {
 	})
 }
 
+func CreateKaryawanWithTX(c *fiber.Ctx, uowInstance uow.UnitOfWork) error {
+	// Parse request body
+	var karyawan models.InsertKaryawanRequest
+	if err := c.BodyParser(&karyawan); err != nil {
+		fmt.Printf(err.Error())
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "invalid request body",
+		})
+	}
+	// Get repository from UOW (no transaction needed for read operation)
+	karyawanRepo := uowInstance.KaryawanRepository()
+	penggunaRepo := uowInstance.PenggunaRepository()
+
+	// buat transaksi
+	err := uowInstance.Begin()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "failed to begin transaction",
+		})
+	}
+
+	defer uowInstance.Rollback()
+
+	// terus insert ke app_user
+	err = penggunaRepo.CreatePengguna(&models.InsertUser{Username: karyawan.Username, Email: karyawan.Email, PasswordHash: karyawan.PasswordHash, NamaLengkap: &karyawan.Nama, Role: karyawan.Role, StatusAkun: karyawan.StatusAkun})
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "failed to create pengguna",
+		})
+	}
+
+	// get id dari app_user
+	dataPengguna, err := penggunaRepo.GetPenggunaByUsername(karyawan.Username)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "failed to get pengguna",
+		})
+	}
+
+	// terus insert ke karyawan
+	err = karyawanRepo.CreateKaryawan(&models.InsertKaryawan{UserID: &dataPengguna.ID, NIP: karyawan.NIP, Nama: karyawan.Nama, TanggalLahir: karyawan.TanggalLahir, JenisKelamin: karyawan.JenisKelamin, JabatanID: karyawan.JabatanID, Alamat: karyawan.Alamat, NoTelepon: karyawan.NoTelepon, Foto: karyawan.Foto})
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "failed to create karyawan",
+		})
+	}
+
+	// commit transaksi
+	err = uowInstance.Commit()
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "failed to commit transaction",
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"message": "Karyawan berhasil dibuat",
+	})
+}
+
 func CreateKaryawanByID(c *fiber.Ctx, uowInstance uow.UnitOfWork) error {
 	// Parse request body
 	var karyawan models.InsertKaryawan

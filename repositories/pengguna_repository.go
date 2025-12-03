@@ -19,6 +19,7 @@ type DbTx interface {
 type PenggunaRepository interface {
 	CreatePengguna(pengguna *models.InsertUser) error
 	GetPenggunaByID(id int32) (*models.User, error)
+	GetPenggunaByUsername(username string) (*models.User, error)
 	UpdatePengguna(pengguna *models.User) error
 	DeletePengguna(id int32) error
 }
@@ -44,6 +45,16 @@ func (r *penggunaRepository) CreatePengguna(pengguna *models.InsertUser) error {
 		return err
 	}
 	return nil
+}
+
+func (r *penggunaRepository) GetPenggunaByUsername(username string) (*models.User, error) {
+	var pengguna models.User
+	query := `SELECT * FROM app_user WHERE username = $1`
+	err := r.db.Get(&pengguna, query, username)
+	if err != nil {
+		return nil, err
+	}
+	return &pengguna, nil
 }
 
 func (r *penggunaRepository) GetPenggunaByID(id int32) (*models.User, error) {
