@@ -17,7 +17,7 @@ type DBTx interface {
 }
 
 type KaryawanRepository interface {
-	CreateKaryawan(karyawan *models.Karyawan) error
+	CreateKaryawan(karyawan *models.InsertKaryawan) error
 	GetKaryawanByID(id int32) (*models.Karyawan, error)
 	UpdateKaryawan(karyawan *models.Karyawan) error
 	DeleteKaryawan(id int32) error
@@ -37,12 +37,10 @@ func NewKaryawanRepositoryWithTx(tx *sqlx.Tx) KaryawanRepository {
 	return &karyawanRepository{db: tx}
 }
 
-func (r *karyawanRepository) CreateKaryawan(karyawan *models.Karyawan) error {
-	query := `INSERT INTO karyawan (user_id, nip, nama, tanggal_lahir, jenis_kelamin, jabatan_id, alamat, no_telepon, foto) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id_karyawan`
-	row := r.db.QueryRow(query, karyawan.UserID, karyawan.NIP, karyawan.Nama, karyawan.TanggalLahir, karyawan.JenisKelamin, karyawan.JabatanID, karyawan.Alamat, karyawan.NoTelepon, karyawan.Foto)
-	err := row.Scan(&karyawan.ID)
+func (r *karyawanRepository) CreateKaryawan(karyawan *models.InsertKaryawan) error {
+	query := `INSERT INTO karyawan (user_id, nip, nama, tanggal_lahir, jenis_kelamin, jabatan_id, alamat, no_telepon, foto) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`
+	_, err := r.db.Exec(query, karyawan.UserID, karyawan.NIP, karyawan.Nama, karyawan.TanggalLahir, karyawan.JenisKelamin, karyawan.JabatanID, karyawan.Alamat, karyawan.NoTelepon, karyawan.Foto)
 	if err != nil {
-		log.Printf("Error creating karyawan: %v", err)
 		return err
 	}
 	return nil

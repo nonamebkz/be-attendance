@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"absensi-versevox/database/uow"
+	"absensi-versevox/models"
+	"fmt"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -42,3 +44,28 @@ func GetKaryawanByID(c *fiber.Ctx, uowInstance uow.UnitOfWork) error {
 	})
 }
 
+func CreateKaryawanByID(c *fiber.Ctx, uowInstance uow.UnitOfWork) error {
+	// Parse request body
+	var karyawan models.InsertKaryawan
+	if err := c.BodyParser(&karyawan); err != nil {
+		fmt.Printf(err.Error())
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "invalid request body",
+		})
+	}
+	// Get repository from UOW (no transaction needed for read operation)
+	karyawanRepo := uowInstance.KaryawanRepository()
+
+	// Create karyawan
+	if err := karyawanRepo.CreateKaryawan(&karyawan); err != nil {
+		fmt.Printf(err.Error())
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "failed to create karyawan",
+		})
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"success": true,
+		"message": "Karyawan berhasil dibuat",
+	})
+}

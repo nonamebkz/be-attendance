@@ -25,4 +25,7 @@ func Setup(app *fiber.App, uowInstance uow.UnitOfWork) {
 	app.Get("/karyawan-get", func(c *fiber.Ctx) error {
 		return handlers.GetKaryawanByID(c, uowInstance)
 	})
+	app.Post("/karyawan-create", func(c *fiber.Ctx) error {
+		return handlers.CreateKaryawanByID(c, uowInstance)
+	})
 }
