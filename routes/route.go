@@ -30,6 +30,9 @@ func Setup(app *fiber.App, uowInstance uow.UnitOfWork) {
 	})
 
 	//Pengguna endpoints
+	app.Get("/pengguna-get", func(c *fiber.Ctx) error {
+		return handlers.GetPenggunaByID(c, uowInstance)
+	})
 	app.Post("/pengguna-create", func(c *fiber.Ctx) error {
 		return handlers.CreatePenggunaByID(c, uowInstance)
 	})
